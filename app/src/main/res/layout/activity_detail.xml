@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".DetailActivity">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="0dp"
@@ -13,16 +13,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/colorPrimary"
-        app:title="@string/app_name"
-        app:titleTextColor="#FFFFFF"
+        app:navigationIcon="@drawable/finish"
         android:id="@+id/toolbar">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_red"
-            android:id="@+id/ivStatus"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="20dp"/>
+
     </android.support.v7.widget.Toolbar>
 
     <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
@@ -34,15 +27,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/recyclerView"/>
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:id="@+id/btnRebind"
-        android:text="重新绑定Service"
-        android:visibility="gone"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="20dp"
+        android:id="@+id/btnSetting"
+        android:src="@drawable/setting"/>
 
 </android.support.constraint.ConstraintLayout>

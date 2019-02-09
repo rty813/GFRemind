@@ -29,8 +29,11 @@ public class MyNotificationListenerService extends NotificationListenerService {
         Bundle bundle = notification.extras;
         String packageName = sbn.getPackageName();
         String title = bundle.getString(Notification.EXTRA_TITLE);
+        if (title == null) {
+            title = notification.tickerText.toString();
+        }
         String content = bundle.getString(Notification.EXTRA_TEXT);
-        SimpleDateFormat df = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("yy/MM/dd HH:mm", Locale.getDefault());
         String time = df.format(new Date());
 
         ContentValues values = new ContentValues();
@@ -38,15 +41,28 @@ public class MyNotificationListenerService extends NotificationListenerService {
         values.put("content", content);
         values.put("package", packageName);
         values.put("time", time);
-        MainActivity.sqliteOperate.insert("notification", values);
+        MySqliteOperate.insert("notification", values);
+        MySqliteOperate.insert("detail", values);
         sendBroadcast(new Intent(MainActivity.ACTION_NOTIFICATION_RECEIVE)
                 .putExtra("values", values));
 
-        if (sbn.getPackageName().endsWith("com.tencent.tim")) {
-            NotificationUtils.notifyMsg(this, sbn.getPackageName(),
-                    bundle.getString(Notification.EXTRA_TITLE), notification.extras.getString(Notification.EXTRA_TEXT));
+        if (MySqliteOperate.keywordsMap.containsKey(packageName)) {
+            String[] keywords = MySqliteOperate.keywordsMap.get(packageName).split(";");
+            String channel = "2";
+            for (String keyword : keywords) {
+                if (title.contains(keyword)) {
+                    channel = "1";
+                    break;
+                }
+            }
+            NotificationUtils.notifyMsg(this, packageName, title, content, channel);
             NotificationUtils.cancel(this, sbn.getTag(), sbn.getId());
         }
+
+//        if (sbn.getPackageName().endsWith("com.tencent.tim") && content != null) {
+//            NotificationUtils.notifyMsg(this, packageName, title, content, channel);
+//            NotificationUtils.cancel(this, sbn.getTag(), sbn.getId());
+//        }
     }
 
     private void printNotification(StatusBarNotification sbn) {

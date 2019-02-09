@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private SwipeMenuRecyclerView recyclerView;
     private ArrayList<Map<String, String>> list;
     private MainAdapter adapter;
-    public static MySqliteOperate sqliteOperate;
     private BroadcastReceiver receiver;
     public static final String ACTION_NOTIFICATION_RECEIVE = "xyz.rty813.MainActivity.action.notification.receive";
 
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 toggleNotificationListenerService();
             }
         });
-        sqliteOperate = new MySqliteOperate(this);
+        new MySqliteOperate(this);
         initRecyclerView();
         initReceiver();
     }
@@ -110,13 +109,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         recyclerView = findViewById(R.id.recyclerView);
-        list = sqliteOperate.queryNotification();
+        list = MySqliteOperate.queryNotification();
         adapter = new MainAdapter(this, list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setSwipeItemClickListener(new SwipeItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-
+                startActivity(new Intent(MainActivity.this, DetailActivity.class)
+                        .putExtra("package", list.get(position).get("package")));
             }
         });
         recyclerView.setAdapter(adapter);
