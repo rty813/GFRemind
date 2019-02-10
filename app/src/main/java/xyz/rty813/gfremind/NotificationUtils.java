@@ -18,7 +18,7 @@ public class NotificationUtils {
         notificationManager.createNotificationChannel(new NotificationChannel("3", "聊天时间提醒", NotificationManager.IMPORTANCE_DEFAULT));
     }
 
-    public static void notifyMsg(Context context, String packageName, String title, String content, String channel) {
+    public static void notifyMsg(Context context, String packageName, String title, String content, String channel, PendingIntent contentIntent) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -26,27 +26,15 @@ public class NotificationUtils {
         } else {
             builder = new NotificationCompat.Builder(context);
         }
-        Intent intent = new Intent(context, DetailActivity.class).putExtra("package", packageName);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         Notification notification = builder.setContentTitle(channel.equals("1") ? packageName : title)
                 .setContentText(channel.equals("1") ? "收到一条通知" : content)
                 .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
+                .setContentIntent(contentIntent)
                 .setColor(context.getResources().getColor(R.color.colorPrimary))
                 .setColorized(true)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .build();
         notificationManager.notify(packageName.hashCode(), notification);
-    }
-
-    public static void cancel(Context context, String tag, int id) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (tag == null) {
-            notificationManager.cancel(id);
-        }
-        else {
-            notificationManager.cancel(tag, id);
-        }
     }
 }

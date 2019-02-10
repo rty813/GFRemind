@@ -1,22 +1,34 @@
 package xyz.rty813.gfremind;
 
 import android.app.Notification;
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Set;
 
 public class MyNotificationListenerService extends NotificationListenerService {
     private final static String TAG = "NotificationListenerService";
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Notification notification = new Notification(R.mipmap.ic_launcher, "正在监听", System.currentTimeMillis());
+        startForeground(0, notification);
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        stopForeground(true);
+        super.onDestroy();
+    }
 
     @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
@@ -55,14 +67,9 @@ public class MyNotificationListenerService extends NotificationListenerService {
                     break;
                 }
             }
-            NotificationUtils.notifyMsg(this, packageName, title, content, channel);
-            NotificationUtils.cancel(this, sbn.getTag(), sbn.getId());
+            NotificationUtils.notifyMsg(this, packageName, title, content, channel, notification.contentIntent);
+            cancelNotification(sbn.getKey());
         }
-
-//        if (sbn.getPackageName().endsWith("com.tencent.tim") && content != null) {
-//            NotificationUtils.notifyMsg(this, packageName, title, content, channel);
-//            NotificationUtils.cancel(this, sbn.getTag(), sbn.getId());
-//        }
     }
 
     private void printNotification(StatusBarNotification sbn) {
@@ -93,8 +100,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
                 + contentText + " ,contentSubtext=" + contentSubtext);
     }
 
-    public static boolean isNotificationListenerServiceEnabled(Context context) {
-        Set<String> packageNames = NotificationManagerCompat.getEnabledListenerPackages(context);
-        return packageNames.contains(context.getPackageName());
+    public static void reBind(Context context) {
+        requestRebind(ComponentName.createRelative(context.getPackageName(), MyNotificationListenerService.class.getCanonicalName()));
     }
 }

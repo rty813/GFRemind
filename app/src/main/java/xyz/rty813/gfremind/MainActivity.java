@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView ivStatus;
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver(receiver, new IntentFilter(ACTION_NOTIFICATION_RECEIVE));
-        if (!MyNotificationListenerService.isNotificationListenerServiceEnabled(this)) {
+        if (!isNotificationListenerServiceEnabled()) {
             Toast.makeText(this, "Service被关闭！请重新绑定！", Toast.LENGTH_SHORT).show();
         }
         else {
@@ -141,11 +143,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toggleNotificationListenerService() {
-        PackageManager pm = getPackageManager();
-        pm.setComponentEnabledSetting(new ComponentName(this, MyNotificationListenerService.class),
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
-        pm.setComponentEnabledSetting(new ComponentName(this, MyNotificationListenerService.class),
-                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+        MyNotificationListenerService.reBind(this);
+//        PackageManager pm = getPackageManager();
+//        pm.setComponentEnabledSetting(new ComponentName(this, MyNotificationListenerService.class),
+//                PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+//        pm.setComponentEnabledSetting(new ComponentName(this, MyNotificationListenerService.class),
+//                PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
         Toast.makeText(this, "已重新绑定！", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isNotificationListenerServiceEnabled() {
+        Set<String> packageNames = NotificationManagerCompat.getEnabledListenerPackages(this);
+        return packageNames.contains(getPackageName());
     }
 }
