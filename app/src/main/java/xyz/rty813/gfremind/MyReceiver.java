@@ -10,5 +10,6 @@ public class MyReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent serviceIntent = new Intent(context, MyNotificationListenerService.class);
         context.startService(serviceIntent);
+        MyNotificationListenerService.reBind(context);
     }
 }

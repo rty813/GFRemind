@@ -35,7 +35,6 @@ public class MyNotificationListenerService extends NotificationListenerService {
                 .build();
 
         startForeground(110, notification);
-        reBind(this);
         return START_STICKY;
     }
 

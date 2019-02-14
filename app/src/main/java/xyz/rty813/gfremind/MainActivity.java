@@ -46,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.btnRebind:
                         toggleNotificationListenerService();
                         break;
+                    case R.id.btnForeground:
+                        startService(new Intent(MainActivity.this, MyNotificationListenerService.class));
+                        break;
                     default:
                         break;
                 }
@@ -60,12 +63,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         ivStatus = findViewById(R.id.ivStatus);
-        findViewById(R.id.btnRebind).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                toggleNotificationListenerService();
-            }
-        });
         new MySqliteOperate(this);
         initRecyclerView();
         initReceiver();
@@ -140,8 +137,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toggleNotificationListenerService() {
-//        MyNotificationListenerService.reBind(this);
-        startService(new Intent(this, MyNotificationListenerService.class));
+        MyNotificationListenerService.reBind(this);
         Toast.makeText(this, "已重新绑定！", Toast.LENGTH_SHORT).show();
     }
 
