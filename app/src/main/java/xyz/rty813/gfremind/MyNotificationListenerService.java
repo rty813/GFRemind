@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -19,9 +20,23 @@ public class MyNotificationListenerService extends NotificationListenerService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Notification notification = new Notification(R.mipmap.ic_launcher, "正在监听", System.currentTimeMillis());
-        startForeground(0, notification);
-        return super.onStartCommand(intent, flags, startId);
+        NotificationCompat.Builder builder;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            builder = new NotificationCompat.Builder(this, "4");
+        } else {
+            builder = new NotificationCompat.Builder(this);
+        }
+        Notification notification = builder.setContentTitle("正在监听")
+                .setAutoCancel(true)
+                .setColor(getResources().getColor(R.color.colorPrimary))
+                .setColorized(true)
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .build();
+
+        startForeground(110, notification);
+        reBind(this);
+        return START_STICKY;
     }
 
     @Override
@@ -62,7 +77,7 @@ public class MyNotificationListenerService extends NotificationListenerService {
             String[] keywords = MySqliteOperate.keywordsMap.get(packageName).split(";");
             String channel = "2";
             for (String keyword : keywords) {
-                if (title.contains(keyword)) {
+                if (title.contains(keyword) && !keyword.equals("")) {
                     channel = "1";
                     break;
                 }

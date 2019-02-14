@@ -3,18 +3,16 @@ package xyz.rty813.gfremind;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
@@ -95,6 +93,25 @@ public class DetailActivity extends AppCompatActivity {
                             }
                         })
                         .setNegativeButton("取消", null)
+                        .show();
+            }
+        });
+        findViewById(R.id.btnClear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(DetailActivity.this)
+                        .setTitle(packageName)
+                        .setMessage("是否要删除该应用全部通知？")
+                        .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                MySqliteOperate.remove("detail", packageName);
+                                MySqliteOperate.remove("notification", packageName);
+                                list = MySqliteOperate.queryDetail(packageName);
+                                adapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setNegativeButton("否", null)
                         .show();
             }
         });
