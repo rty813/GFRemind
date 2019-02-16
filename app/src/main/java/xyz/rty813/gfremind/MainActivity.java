@@ -46,9 +46,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.btnRebind:
                         toggleNotificationListenerService();
                         break;
-                    case R.id.btnForeground:
-                        startService(new Intent(MainActivity.this, MyNotificationListenerService.class));
-                        break;
                     default:
                         break;
                 }

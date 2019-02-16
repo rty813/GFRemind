@@ -19,7 +19,8 @@ public class MyNotificationListenerService extends NotificationListenerService {
     private final static String TAG = "NotificationListenerService";
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate() {
+        super.onCreate();
         NotificationCompat.Builder builder;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             builder = new NotificationCompat.Builder(this, "4");
@@ -35,7 +36,6 @@ public class MyNotificationListenerService extends NotificationListenerService {
                 .build();
 
         startForeground(110, notification);
-        return START_STICKY;
     }
 
     @Override

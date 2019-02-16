@@ -3,7 +3,4 @@
     <item
         android:id="@+id/btnRebind"
         android:title="重新绑定Service"/>
-    <item
-        android:id="@+id/btnForeground"
-        android:title="前台运行" />
 </menu>
