@@ -82,15 +82,6 @@ public class MyNotificationListenerService extends NotificationListenerService {
         }
     }
 
-    @Override
-    public void onNotificationRemoved(StatusBarNotification sbn, RankingMap rankingMap, int reason) {
-        super.onNotificationRemoved(sbn, rankingMap, reason);
-        Log.d(TAG, "onNotificationRemoved: " + reason);
-        if (!sbn.getPackageName().equals("xyz.rty813.gfremind")) {
-            NotificationUtils.cancelMsg(this, sbn.getPackageName());
-        }
-    }
-
     private void printNotification(StatusBarNotification sbn) {
         Notification notification = sbn.getNotification();
         // 标题和时间

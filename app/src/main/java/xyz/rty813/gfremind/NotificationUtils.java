@@ -34,7 +34,7 @@ public class NotificationUtils {
                 .setColor(context.getResources().getColor(R.color.colorPrimary))
                 .setColorized(true)
                 .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.notice)
                 .build();
         notificationManager.notify(packageName.hashCode(), notification);
     }
