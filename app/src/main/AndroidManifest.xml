@@ -12,12 +12,17 @@
         android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".SettingActivity"
+            android:launchMode="singleTop"></activity>
+
         <receiver
             android:name=".MyReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>

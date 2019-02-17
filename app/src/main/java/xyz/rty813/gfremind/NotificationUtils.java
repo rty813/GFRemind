@@ -19,7 +19,7 @@ public class NotificationUtils {
         }
     }
 
-    public static void notifyMsg(Context context, String packageName, String title, String content, String channel, PendingIntent contentIntent) {
+    public static void notifyMsg(Context context, String packageName, String title, String content, String channel, boolean hide, PendingIntent contentIntent) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -27,8 +27,8 @@ public class NotificationUtils {
         } else {
             builder = new NotificationCompat.Builder(context);
         }
-        Notification notification = builder.setContentTitle(channel.equals("1") ? packageName : title)
-                .setContentText(channel.equals("1") ? "收到一条通知" : content)
+        Notification notification = builder.setContentTitle(hide ? packageName : title)
+                .setContentText(hide ? "收到一条通知" : content)
                 .setAutoCancel(true)
                 .setContentIntent(contentIntent)
                 .setColor(context.getResources().getColor(R.color.colorPrimary))
@@ -37,5 +37,10 @@ public class NotificationUtils {
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .build();
         notificationManager.notify(packageName.hashCode(), notification);
+    }
+
+    static void cancelMsg(Context context, String packageName) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(packageName.hashCode());
     }
 }

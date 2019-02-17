@@ -12,16 +12,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MySqliteOperate {
-    private static MySqliteHelper helper;
-    public static Map<String, String> keywordsMap;
+class MySqliteOperate {
+    static Map<String, SettingModel> settingMap;
+    private static MySqliteHelper helper = null;
 
-    public MySqliteOperate(Context context) {
-        helper = new MySqliteHelper(context);
-        keywordsMap = querySetting();
+    static void init(Context context) {
+        if (helper == null) {
+            helper = new MySqliteHelper(context);
+        }
+        settingMap = querySetting();
     }
 
-    public static void insert(String tableName, ContentValues contentValues) {
+    static boolean insert(String tableName, ContentValues contentValues) {
         SQLiteDatabase db = helper.getWritableDatabase();
         db.beginTransaction();
         try {
@@ -33,12 +35,14 @@ public class MySqliteOperate {
             db.setTransactionSuccessful();
         } catch (SQLiteException e) {
             e.printStackTrace();
+            return false;
         } finally {
             db.endTransaction();
         }
+        return true;
     }
 
-    public static ArrayList<Map<String, String>> queryNotification() {
+    static ArrayList<Map<String, String>> queryNotification() {
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.query("notification", new String[]{"package", "title", "content", "time"}, null, null, null, null, "time");
         ArrayList<Map<String, String>> result = new ArrayList<>(cursor.getCount());
@@ -53,10 +57,11 @@ public class MySqliteOperate {
             }
         }
         Collections.reverse(result);
+        cursor.close();
         return result;
     }
 
-    public static ArrayList<Map<String, String>> queryDetail(String packageName) {
+    static ArrayList<Map<String, String>> queryDetail(String packageName) {
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor cursor = db.query("detail", new String[]{"package", "title", "content", "time"},
                 "package=?", new String[]{packageName}, null, null, "time");
@@ -72,10 +77,11 @@ public class MySqliteOperate {
             }
         }
         Collections.reverse(result);
+        cursor.close();
         return result;
     }
 
-    public static void remove(String tableName, String packageName) {
+    static void remove(String tableName, String packageName) {
         SQLiteDatabase db = helper.getReadableDatabase();
         db.beginTransaction();
         db.delete(tableName, "package=?", new String[]{packageName});
@@ -83,29 +89,41 @@ public class MySqliteOperate {
         db.endTransaction();
     }
 
-
-    public static Map<String, String> querySetting() {
+    static Map<String, SettingModel> querySetting() {
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.query("setting", new String[]{"package", "keywords"}, null, null, null, null, null);
-        Map<String, String> result = new HashMap<>();
+        Cursor cursor = db.query("setting", new String[]{"package", "enable", "keywords", "hideMain", "hideSub", "exclude"},
+                null, null, null, null, null);
+        Map<String, SettingModel> result = new HashMap<>();
         if (cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
-                result.put(cursor.getString(0), cursor.getString(1));
+                result.put(cursor.getString(0), new SettingModel(
+                        cursor.getInt(1) == 1,
+                        cursor.getString(2),
+                        cursor.getInt(3) == 1,
+                        cursor.getInt(4) == 1,
+                        cursor.getString(5)
+                ));
             }
         }
         cursor.close();
         return result;
     }
 
-    public static String querySetting(String packageName) {
+    static SettingModel querySetting(String packageName) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor cursor = db.query("setting", new String[]{"keywords"}, "package=?",
-                new String[]{packageName}, null, null, null);
+        Cursor cursor = db.query("setting", new String[]{"enable", "keywords", "hideMain", "hideSub", "exclude"},
+                "package=?", new String[]{packageName}, null, null, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            String result = cursor.getString(0);
+            SettingModel model = new SettingModel(
+                    cursor.getInt(0) == 1,
+                    cursor.getString(1),
+                    cursor.getInt(2) == 1,
+                    cursor.getInt(3) == 1,
+                    cursor.getString(4)
+            );
             cursor.close();
-            return result;
+            return model;
         }
         else {
             cursor.close();

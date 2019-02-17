@@ -7,13 +7,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.yanzhenjie.recyclerview.swipe.SwipeItemClickListener;
@@ -22,10 +20,8 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
-    private ImageView ivStatus;
     private Toolbar toolbar;
     private SwipeMenuRecyclerView recyclerView;
     private ArrayList<Map<String, String>> list;
@@ -59,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
         }
 
-        ivStatus = findViewById(R.id.ivStatus);
-        new MySqliteOperate(this);
+        MySqliteOperate.init(this);
         initRecyclerView();
         initReceiver();
     }
@@ -119,12 +114,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         registerReceiver(receiver, new IntentFilter(ACTION_NOTIFICATION_RECEIVE));
-        if (!isNotificationListenerServiceEnabled()) {
-            Toast.makeText(this, "Service被关闭！请重新绑定！", Toast.LENGTH_SHORT).show();
-        }
-        else {
-            ivStatus.setImageResource(R.drawable.round_green);
-        }
     }
 
     @Override
@@ -136,10 +125,5 @@ public class MainActivity extends AppCompatActivity {
     private void toggleNotificationListenerService() {
         MyNotificationListenerService.reBind(this);
         Toast.makeText(this, "已重新绑定！", Toast.LENGTH_SHORT).show();
-    }
-
-    private boolean isNotificationListenerServiceEnabled() {
-        Set<String> packageNames = NotificationManagerCompat.getEnabledListenerPackages(this);
-        return packageNames.contains(getPackageName());
     }
 }

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -21,21 +20,8 @@ public class MyNotificationListenerService extends NotificationListenerService {
     @Override
     public void onCreate() {
         super.onCreate();
-        NotificationCompat.Builder builder;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            builder = new NotificationCompat.Builder(this, "4");
-        } else {
-            builder = new NotificationCompat.Builder(this);
-        }
-        Notification notification = builder.setContentTitle("正在监听")
-                .setAutoCancel(true)
-                .setColor(getResources().getColor(R.color.colorPrimary))
-                .setColorized(true)
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .build();
-
-        startForeground(110, notification);
+        Log.d(TAG, "onCreate: ");
+        MySqliteOperate.init(this);
     }
 
     @Override
@@ -72,17 +58,36 @@ public class MyNotificationListenerService extends NotificationListenerService {
         sendBroadcast(new Intent(MainActivity.ACTION_NOTIFICATION_RECEIVE)
                 .putExtra("values", values));
 
-        if (MySqliteOperate.keywordsMap.containsKey(packageName)) {
-            String[] keywords = MySqliteOperate.keywordsMap.get(packageName).split(";");
-            String channel = "2";
-            for (String keyword : keywords) {
-                if (title.contains(keyword) && !keyword.equals("")) {
-                    channel = "1";
-                    break;
+        if (MySqliteOperate.settingMap.containsKey(packageName)) {
+            SettingModel model = MySqliteOperate.settingMap.get(packageName);
+            if (model != null && model.isEnable()) {
+                String[] keywords = model.getKeywords().split(";");
+                String[] exclude = model.getExclude().split(";");
+                for (String excludeStr : exclude) {
+                    if (title.contains(excludeStr) && !excludeStr.equals("")) {
+                        return;
+                    }
                 }
+                String channel = "2";
+                for (String keyword : keywords) {
+                    if (title.contains(keyword) && !keyword.equals("")) {
+                        channel = "1";
+                        break;
+                    }
+                }
+                boolean hide = channel.equals("1") ? model.isHideMain() : model.isHideSub();
+                cancelNotification(sbn.getKey());
+                NotificationUtils.notifyMsg(this, packageName, title, content, channel, hide, notification.contentIntent);
             }
-            NotificationUtils.notifyMsg(this, packageName, title, content, channel, notification.contentIntent);
-            cancelNotification(sbn.getKey());
+        }
+    }
+
+    @Override
+    public void onNotificationRemoved(StatusBarNotification sbn, RankingMap rankingMap, int reason) {
+        super.onNotificationRemoved(sbn, rankingMap, reason);
+        Log.d(TAG, "onNotificationRemoved: " + reason);
+        if (!sbn.getPackageName().equals("xyz.rty813.gfremind")) {
+            NotificationUtils.cancelMsg(this, sbn.getPackageName());
         }
     }
 

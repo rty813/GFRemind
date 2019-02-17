@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SettingActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:navigationIcon="@drawable/finish"
+        app:title="@string/app_name"
+        app:titleTextColor="#FFFFFF" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp">
+
+                <TextView
+                    style="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="总开关"
+                    android:textColor="#000000"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Switch
+                    android:id="@+id/swMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+            <include layout="@layout/seperator" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="重要消息设置" />
+
+            <EditText
+                android:id="@+id/etKeywords"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:hint="关键词，用英文分号分割" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    style="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="是否隐藏消息内容"
+                    android:textColor="#000000"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Switch
+                    android:id="@+id/swHideMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+            <include layout="@layout/seperator" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="普通消息设置" />
+
+            <EditText
+                android:id="@+id/etExclude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:hint="排除项，用英文分号分割" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    style="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="是否隐藏消息内容"
+                    android:textColor="#000000"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Switch
+                    android:id="@+id/swHideSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
+
+            <ImageButton
+                android:id="@+id/btnOk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="#00000000"
+                android:src="@drawable/ok" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
