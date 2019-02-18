@@ -25,12 +25,6 @@ public class MyNotificationListenerService extends NotificationListenerService {
     }
 
     @Override
-    public void onDestroy() {
-        stopForeground(true);
-        super.onDestroy();
-    }
-
-    @Override
     public void onNotificationPosted(StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
         Notification notification = sbn.getNotification();
